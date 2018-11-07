@@ -1,0 +1,12 @@
+{
+	"name": "ulid-c",
+	"version": "0.1.0",
+	"repo": "aperezdc/ulid-c",
+	"description": "Universally Unique Lexically Sortable Identifier",
+	"license": "MIT",
+	"keywords": ["identifier", "unique", "sortable", "universal", "ulid"],
+	"src": ["ulid.h", "ulid.c"],
+	"dependencies": {
+		"aperezdc/apicheck": "0.1.1"
+	}
+}

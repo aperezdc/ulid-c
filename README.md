@@ -35,7 +35,7 @@ ulid_encode (&u, ulid_clock_monotonic (), ulid_entropy_rand, NULL);
 
 In order to obtain a textual representation of the value, use `ulid_string()`:
 
-```
+```c
 char s[ULID_STRING_LENGTH + 1];  // +1 for the null terminator
 ulid_string (&u, s);
 ```

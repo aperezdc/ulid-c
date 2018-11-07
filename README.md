@@ -53,6 +53,12 @@ ulid_string (&u, s);
   value to a null-terminated C string *buffer*.
 
 
+### Decoding Functions
+
+- `ulid_timestamp(ulid)` returns the timestamp portion of the ULID, as an
+  `uint64_t` value.
+
+
 ### Shorthand Functions
 
 - `ulid_encode_rand(dst, timestamp)` uses `ulid_entropy_rand`.

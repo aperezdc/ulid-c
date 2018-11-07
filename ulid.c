@@ -257,6 +257,21 @@ ulid_string (const ulid_t* const ulid,
 }
 
 
+uint64_t
+ulid_timestamp (const ulid_t* const ulid)
+{
+    api_check_return_val (ulid != NULL, 0);
+
+    return (uint64_t) ulid->data[0] << 40
+         | (uint64_t) ulid->data[1] << 32
+         | (uint64_t) ulid->data[2] << 24
+         | (uint64_t) ulid->data[3] << 16
+         | (uint64_t) ulid->data[4] <<  8
+         | (uint64_t) ulid->data[5] <<  0
+         ;
+}
+
+
 #if defined(__linux__)
 # include <sys/random.h>
 # define URANDOM_USE_GETRANDOM 1

@@ -23,7 +23,7 @@
 uint64_t
 ulid_time_epoch (void)
 {
-    return (uint64_t) time (NULL);
+    return (uint64_t) time (NULL) * 1000;
 }
 
 

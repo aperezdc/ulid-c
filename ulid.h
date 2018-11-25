@@ -19,6 +19,7 @@ enum {
     ULID_BITS = 128,
     ULID_BYTES = ULID_BITS / 8,
     ULID_STRING_LENGTH = 26,
+    ULID_STRINGZ_LENGTH = ULID_STRING_LENGTH + 1,
 };
 
 typedef struct ulid ulid_t;
@@ -50,7 +51,7 @@ extern void  ulid_copy    (ulid_t*             dst,
                            const ulid_t* const src);
 
 extern void  ulid_string  (const ulid_t* const ulid,
-                           char                buffer[ULID_STRING_LENGTH + 1]);
+                           char                buffer[ULID_STRINGZ_LENGTH]);
 
 extern void  ulid_encode  (ulid_t*             dst,
                            uint64_t            timestamp,

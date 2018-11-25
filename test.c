@@ -25,7 +25,7 @@ main (int argc, char *argv[])
     ulid_t u;
     ulid_make_urandom (&u);
 
-    char s[ULID_STRING_LENGTH + 1];
+    char s[ULID_STRINGZ_LENGTH];
     ulid_string (&u, s);
     printf ("%s\n", s);
 

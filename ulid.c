@@ -198,7 +198,7 @@ enum {
 
 void
 ulid_string (const ulid_t* const ulid,
-             char                buffer[ULID_STRING_LENGTH + 1])
+             char                buffer[ULID_STRINGZ_LENGTH])
 {
     api_check_return (ulid != NULL);
     api_check_return (buffer != NULL);

@@ -147,10 +147,11 @@ ulid_copy (ulid_t* dst, const ulid_t* const src)
 }
 
 
-extern void  ulid_encode  (ulid_t*             dst,
-                           uint64_t            timestamp,
-                           ulid_entropy_func_t rng,
-                           void*               userdata)
+extern void
+ulid_encode  (ulid_t*             dst,
+              uint64_t            timestamp,
+              ulid_entropy_func_t rng,
+              void*               userdata)
 {
     api_check_return (dst != NULL);
     api_check_return (rng != NULL);

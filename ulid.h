@@ -8,6 +8,18 @@
 #ifndef ULID_H
 #define ULID_H
 
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+# ifndef __TINYC__
+#  define ULID_STATIC_SIZE(v) static ULID_ ## v ## _LENGTH
+# endif
+#else
+# define inline __inline
+#endif
+
+#ifndef ULID_STATIC_SIZE
+#define ULID_STATIC_SIZE(v) ULID_ ## v ## _LENGTH
+#endif /* !ULID_STATIC_SIZE */
+
 #include <inttypes.h>
 #include <stdbool.h>
 
@@ -51,7 +63,7 @@ extern void  ulid_copy    (ulid_t*             dst,
                            const ulid_t* const src);
 
 extern void  ulid_string  (const ulid_t* const ulid,
-                           char                buffer[ULID_STRINGZ_LENGTH]);
+                           char                buffer[ULID_STATIC_SIZE(STRINGZ)]);
 
 extern void  ulid_encode  (ulid_t*             dst,
                            uint64_t            timestamp,

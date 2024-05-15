@@ -212,7 +212,10 @@ ulid_string (const ulid_t* const ulid,
              char                buffer[ULID_STRINGZ_LENGTH])
 {
     api_check_return (ulid != NULL);
+
+#if !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
     api_check_return (buffer != NULL);
+#endif
 
     static const char B32[33] = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
@@ -228,7 +231,7 @@ ulid_string (const ulid_t* const ulid,
 #define BB(dstidx, va, vb) \
     buffer[(dstidx)] = B32[(va) | (vb)]
 
-    // Timestamp: data[0..5]
+    /* Timestamp: data[0..5] */
     BB ( 0, 0,               BITr ( 0, 7, 5)); /* data[0]<7:5>              */
     BB ( 1, 0,               BITr ( 0, 4, 0)); /* data[0]<4:0>              */
     BB ( 2, 0,               BITr ( 1, 7, 3)); /* data[1]<7:3>              */
@@ -240,7 +243,7 @@ ulid_string (const ulid_t* const ulid,
     BB ( 8, BITl ( 4, 1, 0), BITr ( 5, 7, 5)); /* data[4]<1:0> data[5]<7:5> */
     BB ( 9, 0,               BITr ( 5, 4, 0)); /* data[5]<4:0>              */
 
-    // Entropy: data[6..15]
+    /* Entropy: data[6..15] */
     BB (10, 0,               BITr ( 6, 7, 3)); /* data[6]<7:3>              */
     BB (11, BITl ( 6, 2, 0), BITr ( 7, 7, 6)); /* data[6]<2:0> data[7]<7:6> */
     BB (12, 0,               BITr ( 7, 5, 1)); /* data[7]<5:1>              */

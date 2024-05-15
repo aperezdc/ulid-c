@@ -7,10 +7,20 @@
 
 #define _POSIX_C_SOURCE 199309L
 
+#if defined(__linux__)
+# include <sys/random.h>
+# define URANDOM_USE_GETRANDOM 1
+#elif defined(__OpenBSD__)
+# define _BSD_SOURCE
+# include <stdlib.h>
+# define URANDOM_USE_ARC4RANDOM 1
+#endif
+
 #include "deps/apicheck/apicheck.h"
 #include "ulid.h"
 
 #include <assert.h>
+#include <fcntl.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -272,17 +282,6 @@ ulid_timestamp (const ulid_t* const ulid)
          ;
 }
 
-
-#if defined(__linux__)
-# include <sys/random.h>
-# define URANDOM_USE_GETRANDOM 1
-#elif defined(__OpenBSD__)
-# include <stdlib.h>
-# define URANDOM_USE_ARC4RANDOM 1
-#else
-# include <fcntl.h>
-#endif
-
 void
 ulid_encode_urandom (ulid_t *dst,
                      uint64_t timestamp)
@@ -290,31 +289,25 @@ ulid_encode_urandom (ulid_t *dst,
     ulid_encode (dst, timestamp, ULID_RNG_SKIP, NULL);
 
 #if defined(URANDOM_USE_GETRANDOM)
-    getrandom (&dst->data[ULID_TIMESTAMP_BYTES], ULID_ENTROPY_BYTES, 0);
+    if (getrandom (&dst->data[ULID_TIMESTAMP_BYTES], ULID_ENTROPY_BYTES, 0) == ULID_ENTROPY_BYTES)
+        return;
 #elif defined(URANDOM_USE_ARC4RANDOM)
     arc4random_buf (&dst->data[ULID_TIMESTAMP_BYTES], ULID_ENTROPY_BYTES);
-#else
+    return;
+#endif
 
     /* As a fallback implementation, try reading from /dev/urandom. */
     int fd = open ("/dev/urandom", O_RDONLY);
-    if (fd == -1) {
-        perror ("cannot open /dev/urandom");
+    if (fd == -1)
         goto fallback;
-    }
 
     size_t nread = read (fd,
                          &dst->data[ULID_TIMESTAMP_BYTES],
                          ULID_ENTROPY_BYTES);
     close (fd);
-
-    if (nread != ULID_ENTROPY_BYTES) {
-        perror ("cannot read /dev/urandom");
-        goto fallback;
-    }
-
-    return;
+    if (nread == ULID_ENTROPY_BYTES)
+        return;
 
 fallback:
     ulid_encode (dst, timestamp, ulid_entropy_rand, NULL);
-#endif
 }

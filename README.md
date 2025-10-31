@@ -58,6 +58,17 @@ ulid_string (&u, s);
 - `ulid_timestamp(ulid)` returns the timestamp portion of the ULID, as an
   `uint64_t` value.
 
+- `ulid_parse(dst, buffer[ULID_STRING_LENGTH+1])` parses an ULID value
+   into *dst* from its string representation in *buffer*. Returns whether
+   the input was valid.
+
+- `ulid_parse_unchecked(dst, buffer[ULID_STRING_LENGTH+1])` parses an ULID
+   into *dst* from its representation in *buffer*. Returns whether the input
+   was valid. Does not check whether the input was valid Base32.
+
+- `ulid_base32_check(buffer[ULID_STRING_LENGTH+1])` checks whether the
+  characters stored in *buffer* are valid Base32.
+
 
 ### Shorthand Functions
 

@@ -65,6 +65,13 @@ extern void  ulid_copy    (ulid_t*             dst,
 extern void  ulid_string  (const ulid_t* const ulid,
                            char                buffer[ULID_STATIC_SIZE(STRINGZ)]);
 
+extern _Bool ulid_base32_check
+                          (const char          buffer[ULID_STATIC_SIZE(STRING)]);
+
+extern _Bool ulid_parse_unchecked
+                          (ulid_t*             dst,
+		                   const char          buffer[ULID_STATIC_SIZE(STRING)]);
+
 extern void  ulid_encode  (ulid_t*             dst,
                            uint64_t            timestamp,
                            ulid_entropy_func_t rng,
@@ -103,6 +110,12 @@ static inline void
 ulid_make_urandom (ulid_t* dst)
 {
     ulid_encode_urandom (dst, ulid_clock_monotonic ());
+}
+
+static inline _Bool
+ulid_parse (ulid_t* dst, const char buffer[ULID_STATIC_SIZE(STRING)])
+{
+	return ulid_base32_check (buffer) && ulid_parse_unchecked (dst, buffer);
 }
 
 #ifdef __cplusplus

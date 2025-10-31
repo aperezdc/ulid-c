@@ -275,6 +275,81 @@ ulid_string (const ulid_t* const ulid,
 }
 
 
+#define BASE32_CHAR_FOREACH(m) \
+    m('0', 0) m('1', 1) m('2', 2) m('3', 3) m('4', 4) \
+    m('5', 5) m('6', 6) m('7', 7) m('8', 8) m('9', 9) \
+    \
+    m('A', 10) m('B', 11) m('C', 12) m('D', 13) m('E', 14) \
+    m('F', 15) m('G', 16) m('H', 17) m('J', 18) m('K', 19) \
+    m('M', 20) m('N', 21) m('P', 22) m('Q', 23) m('R', 24) \
+    m('S', 25) m('T', 26) m('V', 27) m('W', 28) m('X', 29) \
+    m('Y', 30) m('Z', 31)
+
+/* Returns 0xFF for invalid inputs. */
+#if defined(__GNUC__) || defined(__clang__)
+__attribute__((pure))
+#endif
+static uint8_t
+base32_decode_char(char c)
+{
+#define BASE32_CHAR_TO_VALUE_CASE(b32c, b32v) \
+        case b32c: return b32v;
+    switch (c) {
+        BASE32_CHAR_FOREACH(BASE32_CHAR_TO_VALUE_CASE)
+        default:
+            return 0xFF;
+    }
+#undef BASE32_CHAR_TO_VALUE_CASE
+}
+
+
+_Bool
+ulid_base32_check (const char buffer[ULID_STATIC_SIZE(STRING)])
+{
+    api_check_return_val (buffer != NULL, false);
+
+    for (uint8_t i = 0; i < ULID_STRING_LENGTH; i++)
+        if (base32_decode_char (buffer[i]) == 0xFF)
+            return false;
+
+    return true;
+}
+
+_Bool
+ulid_parse_unchecked (ulid_t*    dst,
+                      const char buffer[ULID_STATIC_SIZE(STRING)])
+{
+    api_check_return_val (dst != NULL, false);
+    api_check_return_val (buffer != NULL, false);
+
+#define CV_(i) (base32_decode_char (buffer[i]))
+
+    /* Timestamp. */
+    dst->data[0]  = (CV_( 0) << 5) | (CV_( 1));
+    dst->data[1]  = (CV_( 2) << 3) | (CV_( 3) >> 2);
+    dst->data[2]  = (CV_( 3) << 6) | (CV_( 4) << 1) | (CV_( 5) >> 4);
+    dst->data[3]  = (CV_( 5) << 4) | (CV_( 6) >> 1);
+    dst->data[4]  = (CV_( 6) << 7) | (CV_( 7) << 2) | (CV_( 8) >> 3);
+    dst->data[5]  = (CV_( 8) << 5) | (CV_( 9));
+
+    /* Entropy. */
+    dst->data[6]  = (CV_(10) << 3) | (CV_(11) >> 2);
+    dst->data[7]  = (CV_(11) << 6) | (CV_(12) << 1) | (CV_(13) >> 4);
+    dst->data[8]  = (CV_(13) << 4) | (CV_(14) >> 1);
+    dst->data[9]  = (CV_(14) << 7) | (CV_(15) << 2) | (CV_(16) >> 3);
+    dst->data[10] = (CV_(16) << 5) | (CV_(17));
+    dst->data[11] = (CV_(18) << 3) | (CV_(19) >> 2);
+    dst->data[12] = (CV_(19) << 6) | (CV_(20) << 1) | (CV_(21) >> 4);
+    dst->data[13] = (CV_(21) << 4) | (CV_(22) >> 1);
+    dst->data[14] = (CV_(22) << 7) | (CV_(23) << 2) | (CV_(24) >> 3);
+    dst->data[15] = (CV_(24) << 5) | (CV_(25));
+
+#undef CV_
+
+    return true;
+}
+
+
 uint64_t
 ulid_timestamp (const ulid_t* const ulid)
 {

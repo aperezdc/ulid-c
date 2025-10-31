@@ -20,6 +20,7 @@
 #include "ulid.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <string.h>
 #include <time.h>
@@ -112,8 +113,11 @@ ulid_entropy_rand (void* userdata)
 uint8_t
 ulid_entropy_fd (void* userdata)
 {
+	ssize_t r;
     uint8_t byte = 0;
-    read ((int) ((intptr_t) userdata), &byte, 1);
+	do {
+		r = read ((int) ((intptr_t) userdata), &byte, 1);
+	} while (r < 0 && errno == EINTR);
     return byte;
 }
 

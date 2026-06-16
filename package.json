@@ -1,6 +1,6 @@
 {
 	"name": "ulid-c",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"repo": "aperezdc/ulid-c",
 	"description": "Universally Unique Lexically Sortable Identifier",
 	"license": "MIT",

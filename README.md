@@ -24,7 +24,7 @@ ulid_t u;
 ulid_make_urandom (&u);
 ```
 
-It is possible to customize the timstamp and method used to obtain the random
+It is possible to customize the timestamp and method used to obtain the random
 bytes of entropy using the `ulid_encode()` function, which takes a timestamp
 and a function pointer to fill an `ulid_t` value:
 
@@ -99,7 +99,7 @@ ulid_string (&u, s);
 ### Timestamp Functions
 
 Unless stated otherwise, all timestamp functions have millisecond resolution.
-It is stronly recommended to use `ulid_clock_monotonic()`.
+It is strongly recommended to use `ulid_clock_monotonic()`.
 
 - `ulid_time_epoch()` returns seconds from the Epoch, with seconds resolution.
   Uses `time(2)` under the hood.

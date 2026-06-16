@@ -393,3 +393,20 @@ ulid_encode_urandom (ulid_t *dst,
 fallback:
     ulid_encode (dst, timestamp, ulid_entropy_rand, NULL);
 }
+
+#ifdef ULID_MAIN
+int
+main(int argc, char *argv[])
+{
+    srand (getpid ());
+
+    ulid_t u;
+    ulid_make_urandom (&u);
+
+    char s[ULID_STRINGZ_LENGTH];
+    ulid_string (&u, s);
+    puts (s);
+
+    return EXIT_SUCCESS;
+}
+#endif // ULID_MAIN
